@@ -1,0 +1,20 @@
+name: Teste de Carga
+
+on:
+  workflow_call:
+
+jobs: 
+
+  testedecarga:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Configurando credenciais da aws
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.ID_CHAVE_ACESSO }}
+        aws-secret-access-key: ${{ secrets.CHAVE_SECRETA }}
+        aws-region: us-east-2
+
+    
