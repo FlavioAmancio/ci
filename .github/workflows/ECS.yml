@@ -16,3 +16,26 @@ jobs:
         aws-region: us-east-2
     - name: Obtendo arquivo da tarefa
       run: aws ecs describe-task-definition --task-definition nome da minha tarefa --query taskDefinition > task-definition.json
+
+    - name: Colocar novo id de imagem em uma definição de tarefa no amazon ECS
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: task-definition.json
+        container-name: nome do meu container
+        image: amancioflaviodevops/go_ci:latest
+        environment-variables: |
+          HOST= ${{ secrets.DBHOST }}
+          USER= ${{ secrets.DBUSER }}
+          PASSWORD= ${{ secrets.DBPASSWORD }}
+          DBNAME= ${{ secrets.DBNAME }}
+          DBPORT= ${{ secrets.DBPORT }}
+          PORT= 8000
+          
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: nome do nosso serviço
+        cluster: nome do nosso cluster
+        wait-for-service-stability: true
