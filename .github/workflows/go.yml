@@ -67,3 +67,9 @@ jobs:
      needs: docker
      uses: ./.github/workflows/ECS.yml
      secrets: inherit
+
+  TesteDeCarga:
+     needs: docker
+     if: ${{ github.ref_name =='nome da branch' }}
+     uses: ./.github/workflows/LoadTest.yml
+     secrets: inherit
