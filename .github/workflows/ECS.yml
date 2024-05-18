@@ -19,14 +19,14 @@ jobs:
       run: aws ecs describe-task-definition --task-definition nome da minha tarefa --query taskDefinition > task-definition.json
 
     - name: Copia do task-definition
-      run: cp task-definition.json task-definition.json.old
+      run: cp task-definition.json task-definition.json.bkp
       
     - name: Colocar novo id de imagem em uma definição de tarefa no amazon ECS
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: task-definition.json
-        container-name: nome do meu container
+        container-name: Go
         image: amancioflaviodevops/go_ci:${{github.run_number}}
         environment-variables: |
           HOST= ${{ secrets.DBHOST }}
@@ -43,3 +43,16 @@ jobs:
         service: nome do nosso serviço
         cluster: nome do nosso cluster
         wait-for-service-stability: true
+
+    - name: Requisição
+      continue-on-error: true
+      run: echo "REQUEST=0" >> $GITHUB_ENV ; sleep 30s ; wget //url que irá realizar o teste || echo "REQUEST=1" >> $GITHUB_ENV 
+
+    - name: Deploy Amazon ECS task definition
+      if: ${{ env.REQUEST != 0 }}
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: task-definition.json.bkp
+        service: nome do nosso serviço
+        cluster: nome do nosso cluster
+        wait-for-service-stability: true   
