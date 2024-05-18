@@ -23,7 +23,7 @@ jobs:
       with:
         task-definition: task-definition.json
         container-name: nome do meu container
-        image: amancioflaviodevops/go_ci:latest
+        image: amancioflaviodevops/go_ci:${{github.run_number}}
         environment-variables: |
           HOST= ${{ secrets.DBHOST }}
           USER= ${{ secrets.DBUSER }}
