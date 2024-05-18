@@ -25,6 +25,7 @@ jobs:
     - run: terraform -chdir=infra_ci_kubernetes/env/Homolog init
 
     - run: terraform -chdir=infra_ci_kubernetes/env/Homolog destroy -auto-approve
+    - run: return 1
 
     - run: terraform -chdir=infra_ci_kubernetes/env/Homolog apply -auto-approve
 
@@ -59,3 +60,5 @@ jobs:
     - run: kubectl create secret generic port --from-literal=PORT=8000
 
     - run: kubectl apply -f infra_ci_kubernetes/go.yaml
+
+    - run: kubectl set image deployment/go-api go=amancioflaviodevops/go_ci:${{github.run_number}}
